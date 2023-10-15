@@ -22,3 +22,5 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+open_ai_api_key: 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

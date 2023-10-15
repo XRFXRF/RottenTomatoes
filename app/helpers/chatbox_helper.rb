@@ -1,0 +1,2 @@
+module ChatboxHelper
+end
