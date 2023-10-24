@@ -1,0 +1,21 @@
+// app/assets/javascripts/chat.js.erb
+$(document).ready(function () {
+  $("#chatbox form").submit(function (e) {
+    e.preventDefault();
+    var userMessage = $("#user-input").val();
+
+    $.ajax({
+      url: "<%= chat_create_path %>",
+      type: "POST",
+      data: { message: userMessage },
+      success: function (response) {
+        // Append user message
+        $("#chat-messages").append("<div class='user-message'>" + userMessage + "</div>");
+        // Append AI response
+        $("#chat-messages").append("<div class='assistant-message'>" + response + "</div>");
+        // Clear the input field
+        $("#user-input").val("");
+      },
+    });
+  });
+});
