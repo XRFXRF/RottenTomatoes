@@ -1,8 +1,0 @@
-// app/views/chat/create.js.erb
-
-var userMessage = "<p>User: <%= user_input %></p>";
-var aiMessage = "<p>AI: <%= escape_javascript(@chat_service.message) %></p>";
-
-$("#chat-box").append(userMessage);
-$("#chat-box").append(aiMessage);
-$("#user-input").val(''); 

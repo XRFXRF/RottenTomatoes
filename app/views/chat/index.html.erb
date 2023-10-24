@@ -1,16 +1,61 @@
 <!-- app/views/chat/index.html.erb -->
 
-<h1>Chat with AI</h1>
+<h1>Chat with ChatGPT</h1>
 
 <div id="chat-box">
-  <% @chat_service.messages.each do |message| %>
-    <p><%= message[:role] %>: <%= message[:content] %></p>
-  <% end %>
+  <div id="chat-messages"></div>
+  <input type="text" id="user-input" placeholder="Type your message...">
+  <button id="send-button">Send</button>
 </div>
 
-<%= form_with(url: chat_index_path, method: :post) do |form| %>
-  <div>
-    <%= form.text_field :user_input, id: 'user-input', placeholder: 'Your message' %>
-    <%= form.submit 'Send' %>
-  </div>
-</form>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const chatMessages = document.getElementById("chat-messages");
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+    let conversationComplete = false;
+
+    sendButton.addEventListener("click", function() {
+      if (conversationComplete) {
+        return;
+      }
+
+      const userMessage = userInput.value;
+      displayUserMessage(userMessage);
+      userInput.value = ""; // Clear the input field
+
+      // Send user message to the server and get the response
+      fetch("/chat", {
+        method: "POST",
+        body: JSON.stringify({ user_input: userMessage }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "<%= form_authenticity_token %>",
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          const assistantMessage = data.response;
+          displayAssistantMessage(assistantMessage);
+
+          if (userMessage.toLowerCase().trim() === "exit") {
+            conversationComplete = true;
+          }
+        });
+    });
+
+    function displayUserMessage(message) {
+      const userMessageDiv = document.createElement("div");
+      userMessageDiv.className = "user-message";
+      userMessageDiv.textContent = `You: ${message}`;
+      chatMessages.appendChild(userMessageDiv);
+    }
+
+    function displayAssistantMessage(message) {
+      const assistantMessageDiv = document.createElement("div");
+      assistantMessageDiv.className = "assistant-message";
+      assistantMessageDiv.textContent = `Assistant: ${message}`;
+      chatMessages.appendChild(assistantMessageDiv);
+    }
+  });
+</script>

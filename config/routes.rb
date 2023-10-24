@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  get 'chat/index'
+  get 'chat', to: 'chat#index'
+  post 'chat', to: 'chat#chat'
+  # get 'chat/index'
   resources :questions, only: [:index, :create]
   resources :chatboxs, only: [:index, :create]
   resources :movies
